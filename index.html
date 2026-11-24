@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="按缓存命中、输入输出 Token 和峰谷时段估算 DeepSeek API 人民币费用。数据仅在本机浏览器处理。"
+    />
+    <meta name="theme-color" content="#f3f5f2" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%230b6b5d'/%3E%3Cpath d='M18 16h28M18 48h28M23 25l9 8 9-8M32 33v15M22 39h20' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E"
+    />
+    <title>DeepSeek API 费用计算器</title>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="title-line">
+        <div>
+          <h1>DeepSeek API 费用计算器</h1>
+          <p>按 Token 用量核算人民币费用，结果仅用于估算。</p>
+        </div>
+        <p class="source-note">
+          <a href="https://api-docs.deepseek.com/zh-cn/quick_start/pricing/">官方费率</a>
+          <span>核对于 <time datetime="2026-11-24">2026-11-24</time></span>
+        </p>
+      </div>
+      <form id="mode-form" class="mode-form">
+        <fieldset>
+          <legend>计价方式</legend>
+          <label><input type="radio" name="pricing-mode" value="peak" checked /> 高峰</label>
+          <label><input type="radio" name="pricing-mode" value="offPeak" /> 空闲</label>
+          <label><input type="radio" name="pricing-mode" value="auto" /> 自动</label>
+        </fieldset>
+        <p id="mode-explanation">固定按高峰费率估算。</p>
+      </form>
+    </header>
+
+    <main>
+      <div class="workspace">
+        <form id="usage-form" class="usage-panel" aria-labelledby="usage-title">
+          <div class="section-heading">
+            <h2 id="usage-title">Token 用量</h2>
+            <span>每行独立选择单位</span>
+          </div>
+          <div id="model-rows"></div>
+          <noscript>此计算器需要启用 JavaScript，所有计算均在本地完成。</noscript>
+        </form>
+
+        <aside class="summary" aria-labelledby="summary-title">
+          <h2 id="summary-title">所选模型费用合计</h2>
+          <output id="grand-total" class="grand-total" aria-live="off">¥0.00</output>
+          <p id="selection-hint" class="selection-hint" hidden>尚未选择模型</p>
+          <ul id="summary-list" class="summary-list"></ul>
+          <p class="summary-footnote">金额为估算值，中间计算不四舍五入。</p>
+        </aside>
+      </div>
+
+      <details id="rate-panel" class="rate-panel">
+        <summary>
+          <span>费率配置</span>
+          <span>元 / 百万 tokens</span>
+        </summary>
+        <form id="rates-form">
+          <div class="rate-toolbar">
+            <p id="rate-source-note">正在使用内置费率。</p>
+            <div class="rate-actions">
+              <button id="add-model" type="button">新增模型</button>
+              <button id="reset-rates" type="button">恢复内置费率</button>
+            </div>
+          </div>
+          <div id="rate-models"></div>
+        </form>
+      </details>
+
+      <p id="app-status" class="app-status" role="status" aria-live="polite"></p>
+    </main>
+
+    <footer class="page-footer">
+      <p>用量与费率仅保存在当前浏览器，不会上传。Token 用量刷新后不保留。</p>
+      <p>
+        自动模式内置
+        <a href="https://www.gov.cn/zhengce/content/202511/content_7047090.htm">2026</a> 与
+        <a href="https://www.gov.cn/zhengce/zhengceku/202611/content_7085102.htm">2027</a>
+        年国务院放假安排；未覆盖年份会提示手动选档。
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
