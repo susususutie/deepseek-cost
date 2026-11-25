@@ -37,4 +37,4 @@ vp run preview                 # 预览生产构建（/deepseek-cost/）
 
 推送到 `main` 或手动触发 `.github/workflows/deploy.yml`。工作流使用固定版本的 `voidzero-dev/setup-vp`，执行 frozen 安装、完整检查并上传 `dist`。
 
-GitHub 仓库 Settings → Pages → Source 必须设为 **GitHub Actions**。预期地址：`https://susususutie.github.io/deepseek-cost/`。
+GitHub 仓库 Settings → Pages → Source 必须设为 **GitHub Actions**。在线地址：`https://susususutie.github.io/deepseek-cost/`。

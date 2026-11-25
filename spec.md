@@ -1,8 +1,8 @@
 # DeepSeek API 费用计算器规格草案
 
-- 状态：**已实现并完成本地自动化验收，待 Git 提交与公开部署**
+- 状态：**已部署并通过公开自动化验收**
 - 草案日期：2026-11-24
-- 目标部署地址（部署完成后需实测）：`https://susususutie.github.io/deepseek-cost/`
+- 部署地址：`https://susususutie.github.io/deepseek-cost/`
 - 技术边界：Vite+ 1.6.0 + TypeScript 7 + 原生 DOM；纯静态；生产运行时第三方 JS 为 0
 - 固定环境：Node 26.13.1、pnpm 12.23.0（由 `vp env pin` 写入 `devEngines`）
 
@@ -414,7 +414,7 @@ jobs:
 | 字体                         |   **0KB / 0 请求** | 0KB / 0 请求 | 系统字体栈                                 |
 | 首次加载总量                 |    **≤ 15KB gzip** |      10.22KB | 无图片、无 CDN、无分析、无外部字体         |
 
-实测来源：`vp run check` 中 `vp build` 的压缩体积输出。2026-11-25 对本地 `vp preview` 的 `/deepseek-cost/` 连续执行 3 次 Lighthouse 13.6.0 移动端审计，Performance 均为 100，FCP/LCP 0.8s、TBT 0ms、CLS 0、无布局偏移、3 个请求、约 11KiB。首次公开审计中一次慢 JS 运行暴露了模型行动态插入造成的 CLS 0.394；已在两个移动断点预留内置模型行高度，并本地复测三次为 0。
+实测来源：`vp run check` 中 `vp build` 的压缩体积输出。部署后对公开 URL 连续执行 3 次 Lighthouse 13.6.0 移动端审计，Performance 均为 100，FCP 0.8/0.8/0.9s、LCP 同值、TBT 均为 0ms、CLS 均为 0、均无布局偏移、3 个请求、约 11KiB。首次公开审计中一次慢 JS 运行暴露了模型行动态插入造成的 CLS 0.394；已在两个移动断点预留内置模型行高度，修正工作流 #3 部署后公开复测三次均为 0。
 
 Lighthouse 目标：Performance ≥ 98、TBT ≤ 10ms、CLS = 0、移动模拟 LCP ≤ 1.5s。达成方式：
 
@@ -458,7 +458,7 @@ Lighthouse 目标：Performance ≥ 98、TBT ≤ 10ms、CLS = 0、移动模拟 L
 - 构建产物在 `/deepseek-cost/` 下无资源 404，断外网时除已打开文档链接外核心计算仍可用。
 - GitHub Actions 成功，公开 Pages URL 可访问；最终回复给出实测体积和 Lighthouse 结果。
 
-2026-11-24 已用系统 Chrome 对 `vp preview` 的 `/deepseek-cost/` 执行自动化闭环，实际覆盖默认高峰、M 单位换算、手核算例、档位切换、明细展开、勾选排除、负值暂停、费率即时更新与刷新持久化、模型增删改、恢复内置费率、损坏存储回退及 360px 视口；同时断言无控制台错误、页面异常、404 或外部请求。公开部署后的 CI 和 Lighthouse 仍需在 push 后验证。
+2026-11-25 已用系统 Chrome 对公开 URL 执行自动化闭环，实际覆盖默认高峰、M 单位换算、手核算例、档位切换、明细展开、勾选排除、负值暂停、费率即时更新与刷新持久化、模型增删改、恢复内置费率、损坏存储回退及 360px 视口；同时断言无控制台错误、页面异常、404 或外部请求。部署工作流 #3 成功，最终公开 Lighthouse 3 次均为 100。
 
 ## 12. 已确认决策与自审修正
 
