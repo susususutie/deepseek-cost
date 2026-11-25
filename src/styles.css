@@ -236,6 +236,11 @@ input[type="radio"] {
   font-size: 0.8rem;
 }
 
+#model-rows {
+  /* shortcut: 预留内置两行的高度，增删模型或改变行结构时需同步调整。 */
+  min-height: 0;
+}
+
 .model-row {
   padding-block: 20px;
   border-bottom: 1px solid var(--rule);
@@ -560,6 +565,10 @@ input[type="radio"] {
     grid-template-columns: 1fr;
   }
 
+  #model-rows {
+    min-height: 506px;
+  }
+
   .summary {
     position: static;
     border-top: 1px solid var(--rule);
@@ -594,6 +603,10 @@ input[type="radio"] {
 
   .usage-panel {
     padding: 16px;
+  }
+
+  #model-rows {
+    min-height: 851px;
   }
 
   .model-head {

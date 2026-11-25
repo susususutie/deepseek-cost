@@ -414,13 +414,14 @@ jobs:
 | 字体                         |   **0KB / 0 请求** | 0KB / 0 请求 | 系统字体栈                                 |
 | 首次加载总量                 |    **≤ 15KB gzip** |      10.22KB | 无图片、无 CDN、无分析、无外部字体         |
 
-实测来源：`vp run check` 中 `vp build` 的压缩体积输出。2026-11-24 对本地 `vp preview` 的 `/deepseek-cost/` 执行 Lighthouse 13.6.0 移动端审计，Performance 为 100，FCP/LCP 0.8s、TBT 0ms、CLS 0、3 个请求、约 11KiB。公开 URL 的部署后复测仍需完成。
+实测来源：`vp run check` 中 `vp build` 的压缩体积输出。2026-11-25 对本地 `vp preview` 的 `/deepseek-cost/` 连续执行 3 次 Lighthouse 13.6.0 移动端审计，Performance 均为 100，FCP/LCP 0.8s、TBT 0ms、CLS 0、无布局偏移、3 个请求、约 11KiB。首次公开审计中一次慢 JS 运行暴露了模型行动态插入造成的 CLS 0.394；已在两个移动断点预留内置模型行高度，并本地复测三次为 0。
 
 Lighthouse 目标：Performance ≥ 98、TBT ≤ 10ms、CLS = 0、移动模拟 LCP ≤ 1.5s。达成方式：
 
 - 首屏只有文本、表单和边线；LCP 不依赖图片或客户端请求。
 - `type="module"` 延迟执行，初始化任务远低于 50ms；少量输入只做简单乘加，不引入 Worker 或节流复杂度。
 - 不整棵重建 DOM，避免布局抖动；金额区预留稳定尺寸，使用表格数字。
+- 模型行由 JS 首次插入，移动端必须为内置两行预留高度，避免慢脚本下结果区下移；改变行结构或默认模型数时同步校准两个断点的 `min-height`。
 - CSS 体量小，无需为“关键 CSS”再引入拆分工具；不使用 `content-visibility` 处理小页面。
 - 生产环境无第三方源请求；官方文档链接只在用户点击时导航。
 - 部署后对公开 URL 做 3 次移动端 Lighthouse，报告中位数、运行日期与工具环境，同时报告 `dist` 各文件原始/gzip 体积；若未达 98 继续优化，不伪造结果。
@@ -466,4 +467,5 @@ Lighthouse 目标：Performance ≥ 98、TBT ≤ 10ms、CLS = 0、移动模拟 L
 3. **模型管理**：配置面板支持新增、重命名、删除模型，ID 自动生成且唯一，至少保留一个模型。
 4. **自审修正**：节假日参数改为同时携带覆盖年份与日期集合；增加 `calculateCosts()` 作为“仅合计勾选模型”的公开测试边界；非法数值在纯函数边界抛出 `RangeError`，由 DOM 转为可见错误。
 5. **Vite+ 工具链修正**：已按用户反馈删除 npm 锁文件与 npm 事实链；以干净 `vp create` 结果为参照，通过 `vp migrate` 对齐 Vite+ 1.6.0，并使用 `vp env pin` 固定 Node 26.13.1 与 pnpm 12.23.0。DOM 按用量视图、费率配置视图和根组合拆分。
-6. **确认门**：Git 提交和 push 仍需在执行前再次单独确认。
+6. **CLS 回归修正**：公开 Lighthouse 曾出现 JS 晚到导致的移动端 CLS 0.394；通过为 506px / 851px 两个断点预留默认模型行高度，本地连续三次恢复为 CLS 0。
+7. **确认门**：Git 提交和 push 已获得授权；后续远端操作沿用本次范围，不扩大到其他仓库。
